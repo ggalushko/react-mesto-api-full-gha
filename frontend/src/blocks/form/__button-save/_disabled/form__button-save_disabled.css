@@ -1,0 +1,10 @@
+.form__button-save_disabled {
+  opacity: 0.2;
+  background-color: transparent;
+  color: #000;
+  border: 1px solid #000;
+}
+
+.form__button-save_disabled:hover {
+  pointer-events: none;
+}

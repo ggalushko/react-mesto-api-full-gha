@@ -1,0 +1,10 @@
+.image-container {
+  margin: auto;
+  width: fit-content;
+  box-sizing: border-box;
+  display: grid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
