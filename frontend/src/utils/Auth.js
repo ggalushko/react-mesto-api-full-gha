@@ -49,5 +49,5 @@ class Auth {
 }
 
 export const auth = new Auth({
-  baseURL: "http://api.mestofull.nomoreparties.co/",
+  baseURL: "http://api.mestofull.nomoreparties.co",
 });
