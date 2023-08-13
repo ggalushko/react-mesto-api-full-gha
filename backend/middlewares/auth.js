@@ -1,7 +1,9 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
 const AuthError = require('../errors/AuthError');
 
-const secretKey = 'yandex';
+const secretKey = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
+
 const jwtToken = (payload) => jwt.sign(payload, secretKey, { expiresIn: '7d' });
 
 const auth = (req, res, next) => {
