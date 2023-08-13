@@ -99,7 +99,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseURL: "http://api.mestofull.nomoreparties.co",
+  baseURL: "https://api.mestofull.nomoreparties.co",
   headers: {
     authorization: "47013706-890f-4248-97af-220f7fa64e36",
     "Content-Type": "application/json",
