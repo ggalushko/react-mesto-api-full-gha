@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi } = require('celebrate');
@@ -10,12 +9,12 @@ const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { auth } = require('./middlewares/auth');
-// const cors = require('./middlewares/cors');
+const auth = require('./middlewares/auth');
+const cors = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-app.use(cors({ origin: ['https://mestofull.nomoreparties.co', 'https://api.mestofull.nomoreparties.co', 'http://mestofull.nomoreparties.co', 'http://api.mestofull.nomoreparties.co', 'http://praktikum.tk'] }));
+app.use(cors);
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(express.json());
