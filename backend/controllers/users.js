@@ -1,12 +1,11 @@
+const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
-const AuthError = require('../errors/AuthError');
 const ConflictError = require('../errors/ConflictError');
 const ServerError = require('../errors/ServerError');
-
-const { jwtToken } = require('../middlewares/auth');
 
 const saltRounds = 10;
 
@@ -125,24 +124,12 @@ module.exports.updateUserAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
-  User.findOne({ email })
-    .select('+password')
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        return next(new AuthError('Ошибка авторизации'));
-      }
-
-      const passwordValid = bcrypt.compare(password, user.password);
-
-      return Promise.all([passwordValid, user]);
+      const token = jwt.sign({ id: user.id }, NODE_ENV === 'production' ? JWT_SECRET : 'secret', { expiresIn: '7d' });
+      return res
+        .status(200)
+        .send({ token });
     })
-    .then(([passwordIsValid, user]) => {
-      if (!passwordIsValid) {
-        throw new AuthError('Ошибка авторизации');
-      }
-      return jwtToken({ id: user.id });
-    })
-    .then((token) => res.send({ token }))
-    .catch((err) => next(err));
+    .catch(next);
 };
