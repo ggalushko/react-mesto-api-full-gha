@@ -11,6 +11,7 @@ class Auth {
     const res = await fetch(`${this._options.baseURL}/signup`, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -25,6 +26,7 @@ class Auth {
     const res = await fetch(`${this._options.baseURL}/signin`, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
