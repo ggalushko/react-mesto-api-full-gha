@@ -42,6 +42,7 @@ class Auth {
     const res = await fetch(`${this._options.baseURL}/users/me`, {
       method: "GET",
       headers: {
+        Accept: 'application/json',
         "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`,
       },
