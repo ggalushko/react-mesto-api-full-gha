@@ -1,14 +1,6 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
-# Проект Mesto бэкенд
-Используются технологии: NodeJS, Express, MongoDB, Mongoose.
-
-## В рамках проектной работы реализованы следующие возможности:
-1. Для пользователя: создание, редактирование данных пользователя и аватара.
-2. Для карточек: создание, редактирование, постановка/снятие лайка.
-3. Получение данных пользователя и карточек по id, списка всех пользователей и карточек.
-4. Регистрация и авторизацияю
-
-### Ссылка на репозиторий [вот тут](https://github.com/Lizabettt/express-mesto-gha)
+# Проект Mesto фронтенд + бэкенд
+## Репозиторий находится по адресу https://github.com/ggalushko/express-mesto-gha
 
 ## Директории
 
@@ -20,6 +12,5 @@
 
 ## Запуск проекта
 
-
 `npm run start` — запускает сервер   
-`npm run live` — запускает сервер с hot-reload
+`npm run dev` — запускает сервер с hot-reload

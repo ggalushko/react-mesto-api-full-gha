@@ -1,50 +1,74 @@
-require('dotenv').config(); // env-переменные из файла .env добавятся в process.env ; .env вгит игнор добавить
-
+require('dotenv').config();
 const express = require('express');
-
-const app = express();
-const { PORT = 3000 } = process.env;
-
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const NotFoundError = require('./errors/NotFoundError');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { auth } = require('./middlewares/auth');
+const { cors } = require('./middlewares/cors');
 
+const { PORT = 3000 } = process.env;
+const app = express();
+app.use(cors);
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-const { errors } = require('celebrate');
+app.use(express.json());
 
-const rateLimit = require('express-rate-limit');
-const bodyParser = require('body-parser');
-const cors = require('./middlewares/cors');
-
-app.use(cors);
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
-const router = require('./routes');
-
-const { requestLogger, errorLogger } = require('./middlewares/logger');
-
-app.use(requestLogger);// за ним идут все обработчики роутов
-
-//  Чтобы защититься от множества автоматических запросов
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // за 15 минут
-  max: 100, // можно совершить максимум 100 запросов с одного IP
-});
-app.use(limiter);// подключаем rate-limiter
-
-app.get('/crash-test', () => { // до роутов, сразу после логгера
+app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
 
-app.use(router);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().pattern(/https?:\/\/(www\.)?[-\w@:%\.\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-\w()@:%\.\+~#=//?&]*)/i),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
+
+app.use(auth);
+
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Ничего не найдено'));
+});
+
 app.use(errorLogger);
+
 app.use(errors());
-
-const errorWithoutStatus = require('./middlewares/errorWithoutStatus');
-
-app.use(errorWithoutStatus);
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'Произошла ошибка на сервере'
+        : message,
+    });
+  next();
+});
 
 app.listen(PORT);

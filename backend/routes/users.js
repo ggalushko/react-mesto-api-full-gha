@@ -1,53 +1,34 @@
-const userRouter = require('express').Router();
+const usersRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-// eslint-disable-next-line
-const regURL = /^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/;
 const {
   getUsers,
-  getUserId,
-  getUserMy,
-  changeUserData,
-  changeAvatar,
+  getUser,
+  getCurrentUser,
+  updateUserInfo,
+  updateUserAvatar,
 } = require('../controllers/users');
 
-// запрос всех пользователей
-userRouter.get('/', getUsers);
+usersRouter.get('/', getUsers);
+usersRouter.get('/me', getCurrentUser);
 
-// запрос моего пользователя
-userRouter.get('/me', getUserMy);
-
-// запрос пользователя по id
-userRouter.get(
-  '/:userId',
-  celebrate({
-    params: Joi.object().keys({
-      userId: Joi.string().hex().length(24).required(),
-    }),
+usersRouter.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi.string().min(2).max(30).required(),
   }),
-  getUserId,
-);
+}), updateUserInfo);
 
-// запрос на изменение данных пользователя
-userRouter.patch(
-  '/me',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(30).required(),
-    }),
+usersRouter.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().required().pattern(/https?:\/\/(www\.)?[-\w@:%\.\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-\w()@:%\.\+~#=//?&]*)/i),
   }),
-  changeUserData,
-);
+}), updateUserAvatar);
 
-// запрос на изменение аватара пользователя
-userRouter.patch(
-  '/me/avatar',
-  celebrate({
-    body: Joi.object().keys({
-      avatar: Joi.string().regex(regURL).required(),
-    }),
+usersRouter.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().length(24).hex().required(),
   }),
-  changeAvatar,
-);
+}), getUser);
 
-module.exports = userRouter;
+module.exports = usersRouter;

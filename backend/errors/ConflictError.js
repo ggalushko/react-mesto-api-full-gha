@@ -1,8 +1,7 @@
-class Conflict extends Error {
+class BadRequest extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 409;
   }
 }
-
-module.exports = Conflict;
+module.exports = BadRequest;
