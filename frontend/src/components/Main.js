@@ -42,7 +42,7 @@ export default function Main({
         {cards.map((card) => {
           return (
             <Card
-              key={card._id}
+              key={card.id}
               onClick={onCardClick}
               onLike={onCardLike}
               onDelete={onCardDelete}

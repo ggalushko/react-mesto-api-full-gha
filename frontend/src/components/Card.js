@@ -4,8 +4,8 @@ import { useContext } from "react";
 export function Card({ card, onClick, onLike, onDelete }) {
   const userContext = useContext(CurrentUserContext);
 
-  const isOwn = card.owner._id === userContext._id;
-  const isLiked = card.likes.some((i) => i._id === userContext._id);
+  const isOwn = card.owner.id === userContext.id;
+  const isLiked = card.likes.some((i) => i.id === userContext.id);
   const cardLikeButtonClassName = `like-button ${
     isLiked ? "like-button_active" : ""
   }`;
