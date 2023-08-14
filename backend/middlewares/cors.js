@@ -1,21 +1,21 @@
-const cors = (req, res, next) => {
-  const allowedCors = [
-    'localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001',
-    'https://127.0.0.1:3000',
-    'https://127.0.0.1:3001',
-    'http://localhost:3000',
-    'https://localhost:3000',
-    'http://localhost:3001',
-    'https://localhost:3001',
-    'https://mestofull.nomoreparties.co',
-    'https://api.mestofull.nomoreparties.co',
-    'http://mestofull.nomoreparties.co',
-    'http://api.mestofull.nomoreparties.co',
-    'http://praktikum.tk',
-    'localhost:3000'];
+const allowedCors = [
+  'localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'https://127.0.0.1:3000',
+  'https://127.0.0.1:3001',
+  'http://localhost:3000',
+  'https://localhost:3000',
+  'http://localhost:3001',
+  'https://localhost:3001',
+  'https://mestofull.nomoreparties.co',
+  'https://api.mestofull.nomoreparties.co',
+  'http://mestofull.nomoreparties.co',
+  'http://api.mestofull.nomoreparties.co',
+  'http://praktikum.tk',
+  'localhost:3000'];
 
+module.exports = (req, res, next) => {
   const { method } = req;
   const { origin } = req.headers;
 
@@ -32,5 +32,3 @@ const cors = (req, res, next) => {
 
   return next();
 };
-
-module.exports = { cors };
