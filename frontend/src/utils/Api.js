@@ -101,7 +101,7 @@ class Api {
 export const api = new Api({
   baseURL: "https://api.mestofull.nomoreparties.co",
   headers: {
-    authorization: "47013706-890f-4248-97af-220f7fa64e36",
+    authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json",
   },
 });
