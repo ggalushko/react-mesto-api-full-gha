@@ -71,23 +71,23 @@ export function App() {
   const handleAddCard = () => setAddCardPopupIsOpened(true);
   const handleEditAvatar = () => setChangeAvatarPopupIsOpened(true);
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i.id === currentUser.id);
 
     if (!isLiked) {
       api
-        .addLike(card._id)
+        .addLike(card.id)
         .then((newCard) => {
           setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+            state.map((c) => (c.id === card.id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
     } else {
       api
-        .removeLike(card._id)
+        .removeLike(card.id)
         .then((newCard) => {
           setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+            state.map((c) => (c.id === card.id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
@@ -96,9 +96,9 @@ export function App() {
 
   async function handleCardDelete(card) {
     api
-      .deleteCard(card._id)
+      .deleteCard(card.id)
       .then(() => {
-        setCards((newCards) => newCards.filter((c) => card._id !== c._id));
+        setCards((newCards) => newCards.filter((c) => card.id !== c.id));
       })
       .catch((err) => console.log(err));
   }
