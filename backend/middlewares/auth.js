@@ -1,31 +1,21 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET = 'JWT_SECRET' } = process.env;
 const jwt = require('jsonwebtoken');
 const AuthError = require('../errors/AuthError');
 
-const secretKey = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
-
-const jwtToken = (payload) => jwt.sign(payload, secretKey, { expiresIn: '7d' });
-
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer')) {
-    throw new AuthError('Вы не авторизованы');
+  if (!authorization) {
+    throw new AuthError('Ошибка авторизации');
   }
-
   const token = authorization.replace('Bearer ', '');
   let payload;
-
   try {
-    payload = jwt.verify(token, secretKey);
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret');
   } catch (err) {
-    return next(new AuthError('Некорректный токен'));
+    next(new AuthError('Ошибка авторизации'));
   }
   req.user = payload;
-  return next();
+  next();
 };
 
-module.exports = {
-  auth,
-  jwtToken,
-};
+module.exports = auth;
