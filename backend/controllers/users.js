@@ -20,7 +20,7 @@ const getUserById = async (req, res, next) => {
     let action;
 
     if (req.path === '/me') {
-      action = req.user._id;
+      action = req.user.id;
     } else {
       action = req.params.id;
     }
@@ -72,7 +72,7 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findUserByCredentials(email, password);
-    const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+    const token = jwt.sign({ id: user.id }, 'secret-key', { expiresIn: '7d' });
 
     res.cookie('jwt', token, {
       maxAge: 3600000 * 24 * 7,
@@ -96,7 +96,7 @@ const editProfile = async (req, res, next) => {
     }
 
     const user = await User.findByIdAndUpdate(
-      req.user._id,
+      req.user.id,
       action,
       { new: true, runValidators: true },
     );
