@@ -14,10 +14,11 @@ import { Footer } from "./Footer";
 import { api } from "../utils/Api";
 import { auth } from "../utils/Auth";
 import Main from "./Main";
-import { Route, Routes, useNavigat, navigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
 export function App() {
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("jwt"));
   const [email, setEmail] = useState(" ");
   const [currentUser, setCurrentUser] = useState({});
