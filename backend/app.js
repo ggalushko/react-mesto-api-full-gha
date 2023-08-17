@@ -1,22 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const usersRouter = require('./routes/users');
+const NotFoundError = require('./errors/NotFoundError');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-const NotFoundError = require('./errors/NotFoundError');
+const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { auth } = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const cors = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
-const app = express();
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-app.use(express.json());
+const app = express();
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -49,25 +48,25 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+app.use('/users', usersRouter);
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Ничего не найдено'));
 });
 
 app.use(errorLogger);
-
 app.use(errors());
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'Произошла ошибка на сервере'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
-app.listen(PORT);
+const connect = async () => {
+  try {
+    await mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+      useNewUrlParser: true,
+    });
+    await app.listen(PORT);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+connect();

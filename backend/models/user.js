@@ -4,53 +4,60 @@ const isUrl = require('validator/lib/isURL');
 const isEmail = require('validator/lib/isEmail');
 const AuthError = require('../errors/AuthError');
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      minlength: 2,
-      maxlength: 30,
-      default: 'Жак-Ив Кусто',
-    },
-    about: {
-      type: String,
-      minlength: 2,
-      maxlength: 30,
-      default: 'Исследователь',
-    },
-    avatar: {
-      type: String,
-      default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-      validate: isUrl,
-    },
-    email: {
-      type: String,
-      unique: true,
-      validate: isEmail,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      select: false,
-    },
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: isEmail,
   },
-  {
-    versionKey: false,
+  password: {
+    type: String,
+    required: true,
+    select: false,
   },
-);
+  name: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
+    default: 'Жак-Ив Кусто',
+  },
+  about: {
+    type: String,
+    minlength: 2,
+    maxlength: 30,
+    default: 'Исследователь',
+  },
+  avatar: {
+    type: String,
+    validate: isUrl,
+    default:
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+  },
+});
 
-// eslint-disable-next-line func-names, consistent-return
-userSchema.statics.findUserByCredentials = async function (email, password, next) {
+userSchema.statics.findUserByCredentials = async function (
+  email,
+  password,
+  next,
+) {
   try {
     const user = await this.findOne({ email }).select('+password');
+
     if (!user) {
-      return Promise.reject(new AuthError('Ошибка авторизации'));
+      return Promise.reject(
+        new AuthError('Неправильные почта или пароль'),
+      );
     }
-    const passwordIsCorrect = await bcrypt.compare(password, user.password);
-    if (!passwordIsCorrect) {
-      return Promise.reject(new AuthError('Ошибка авторизации'));
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return Promise.reject(
+        new AuthError('Неправильные почта или пароль'),
+      );
     }
+
     return user;
   } catch (err) {
     next(err);

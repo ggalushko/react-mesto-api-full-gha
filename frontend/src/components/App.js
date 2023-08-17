@@ -181,10 +181,11 @@ export function App() {
         .catch((err) => {
           setTooltipIsOk(true);
           setInfoTooltipIsOpened(true);
+          localStorage.removeItem("jwt")
           console.log(err);
         });
     }
-  }, []);
+  }, [loggedIn]);
 
   const [tooltipIsOk, setTooltipIsOk] = useState(true);
 
