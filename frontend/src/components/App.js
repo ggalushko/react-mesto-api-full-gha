@@ -187,7 +187,7 @@ useEffect(() => {
 
   function handleLogout() {
     localStorage.removeItem("jwt");
-    setEmail(" ");
+    setEmail("");
     setLoggedIn(false);
   }
 
