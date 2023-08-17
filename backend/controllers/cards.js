@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
-    const card = await Card.create({ name, link, owner: req.user.id });
+    const card = await Card.create({ name, link, owner: req.user._id });
 
     res.status(201).send(card);
   } catch (err) {
@@ -30,17 +30,17 @@ const getCards = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const card = await Card.findById(req.params.id);
+    const card = await Card.findById(req.params._id);
 
     if (!card) {
       throw new NotFoundError('Карточка не найдена.');
     }
 
-    if (card.owner.toString() !== req.user.id) {
+    if (card.owner.toString() !== req.user._id) {
       throw new ForbiddenError('Нельзя удалять чужие карточки');
     }
 
-    await Card.findByIdAndDelete(req.params.id);
+    await Card.findByIdAndDelete(req.params._id);
 
     res.send(card);
   } catch (err) {
@@ -65,8 +65,8 @@ const handleLike = async (req, res, next) => {
     }
 
     const card = await Card.findByIdAndUpdate(
-      req.params.id,
-      { [action]: { likes: req.user.id } },
+      req.params._id,
+      { [action]: { likes: req.user._id } },
       { new: true },
     );
 

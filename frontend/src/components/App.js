@@ -95,23 +95,23 @@ useEffect(() => {
   const handleAddCard = () => setAddCardPopupIsOpened(true);
   const handleEditAvatar = () => setChangeAvatarPopupIsOpened(true);
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i.id === currentUser.id);
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     if (!isLiked) {
       api
-        .addLike(card.id)
+        .addLike(card._id)
         .then((newCard) => {
           setCards((state) =>
-            state.map((c) => (c.id === card.id ? newCard : c))
+            state.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
     } else {
       api
-        .removeLike(card.id)
+        .removeLike(card._id)
         .then((newCard) => {
           setCards((state) =>
-            state.map((c) => (c.id === card.id ? newCard : c))
+            state.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
@@ -120,9 +120,9 @@ useEffect(() => {
 
   async function handleCardDelete(card) {
     api
-      .deleteCard(card.id)
+      .deleteCard(card._id)
       .then(() => {
-        setCards((newCards) => newCards.filter((c) => card.id !== c.id));
+        setCards((newCards) => newCards.filter((c) => card._id !== c._id));
       })
       .catch((err) => console.log(err));
   }
