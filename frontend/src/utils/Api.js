@@ -7,6 +7,10 @@ class Api {
     return res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
   }
 
+  getToken(jwt) {
+    this._options.headers.authorization = `Bearer ${jwt}`;
+  }
+
   async getInitialCards() {
     const res = await fetch(`${this._options.baseURL}/cards`, {
       headers: {
@@ -101,7 +105,6 @@ class Api {
 export const api = new Api({
   baseURL: "https://api.mestofull.nomoreparties.co",
   headers: {
-    authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json",
   },
 });

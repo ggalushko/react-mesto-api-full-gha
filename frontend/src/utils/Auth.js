@@ -8,46 +8,42 @@ class Auth {
   }
 
   async signUp(email, password) {
-    const res = await fetch(`${this._options.baseURL}/signup`, {
+    return fetch(`${  this._options.baseURL}/signup`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
+      body: JSON.stringify({ password, email }),
+      credentials: "include",
+    }).then((res) => {
+      return this._checkResponse(res);
     });
-    return this._checkResponse(res);
   }
 
   async signIn(email, password) {
-    const res = await fetch(`${this._options.baseURL}/signin`, {
+    return fetch(`${  this._options.baseURL}/signin`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
+      body: JSON.stringify({ password, email }),
+      credentials: "include",
+    }).then((res) => {
+      return this._checkResponse(res);
     });
-
-    return this._checkResponse(res);
   }
 
   async checkToken(jwt) {
-    const res = await fetch(`${this._options.baseURL}/users/me`, {
+    return fetch(`${this._options.baseURL}/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
+        "Authorization": `Bearer ${jwt}`,
       },
+    }).then((res) => {
+      return this._checkResponse(res);
     });
-    return this._checkResponse(res);
-  }
+}
 }
 
 export const auth = new Auth({

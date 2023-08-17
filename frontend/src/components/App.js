@@ -14,37 +14,60 @@ import { Footer } from "./Footer";
 import { api } from "../utils/Api";
 import { auth } from "../utils/Auth";
 import Main from "./Main";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigat, navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
 export function App() {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("jwt"));
   const [email, setEmail] = useState(" ");
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (loggedIn) {
-      Promise.all([api.getUserData(), api.getInitialCards()])
-        .then(([userData, cards]) => {
-          setCurrentUser(userData);
-          setCards(cards);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [loggedIn]);
-
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
-  useEffect(() => {}, [cards]);
-
   const [editProfilePopupIsOpened, setEditProfilePopupIsOpened] =
-    useState(false);
-  const [infoTooltipIsOpened, setInfoTooltipIsOpened] = useState(false);
-  const [addCardPopupIsOpened, setAddCardPopupIsOpened] = useState(false);
-  const [changeAvatarPopupIsOpened, setChangeAvatarPopupIsOpened] =
-    useState(false);
-  const [deleteCardPopupIsOpened, setDeleteCardPopupIsOpened] = useState(false);
-  const [selectedCard, setSelectedCard] = useState({});
+  useState(false);
+const [infoTooltipIsOpened, setInfoTooltipIsOpened] = useState(false);
+const [addCardPopupIsOpened, setAddCardPopupIsOpened] = useState(false);
+const [changeAvatarPopupIsOpened, setChangeAvatarPopupIsOpened] =
+  useState(false);
+const [deleteCardPopupIsOpened, setDeleteCardPopupIsOpened] = useState(false);
+const [selectedCard, setSelectedCard] = useState({});
+const [tooltipIsOk, setTooltipIsOk] = useState(true);
+const jwt = localStorage.getItem("jwt");
+
+
+useEffect(() => {
+  function handleClosePopup(e) {
+    if (e.target.classList.contains("popup_opened") || e.key === "Escape") {
+      closeAllPopups();
+    }
+  }
+  document.addEventListener("keydown", handleClosePopup);
+  document.addEventListener("mousedown", handleClosePopup);
+
+  return () => {
+    document.removeEventListener("keydown", handleClosePopup);
+    document.removeEventListener("mousedown", handleClosePopup);
+  };
+}, []);
+
+useEffect(() => {
+  if (jwt) {
+    auth.checkToken(jwt)
+      .then((res) => {
+        api.getToken(jwt);
+        setEmail(res.email);
+        setLoggedIn(true);
+        setCurrentUser(res);
+        navigate("/");
+      })
+      .catch((err) => console.log(err));
+
+    api.getInitialCards({authorization: `Bearer ${jwt}`})
+    .then((res) => {
+      setCards(res.reverse());
+    })
+    .catch((err) => console.log(err));
+  }
+}, [jwt]);
 
   const handleCardClick = (e) => {
     setSelectedCard({ name: e.target.alt, link: e.target.src });
@@ -165,29 +188,9 @@ export function App() {
     localStorage.removeItem("jwt");
     setEmail(" ");
     setLoggedIn(false);
-    navigate("/signin");
   }
 
-  useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth
-        .checkToken(jwt)
-        .then((res) => {
-          setLoggedIn(true);
-          setEmail(res.data.email);
-          navigate("/", { replace: true });
-        })
-        .catch((err) => {
-          setTooltipIsOk(true);
-          setInfoTooltipIsOpened(true);
-          localStorage.removeItem("jwt")
-          console.log(err);
-        });
-    }
-  }, [loggedIn]);
 
-  const [tooltipIsOk, setTooltipIsOk] = useState(true);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
