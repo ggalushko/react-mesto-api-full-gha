@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const cors = require('cors');
 const { celebrate, Joi } = require('celebrate');
 const usersRouter = require('./routes/users');
 const NotFoundError = require('./errors/NotFoundError');
@@ -11,17 +12,39 @@ const { login, createUser } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
-const cors = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(cors({
+  origin: [
+    'localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'https://127.0.0.1:3000',
+    'https://127.0.0.1:3001',
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3001',
+    'https://mestofull.nomoreparties.co',
+    'https://api.mestofull.nomoreparties.co',
+    'http://mestofull.nomoreparties.co',
+    'http://api.mestofull.nomoreparties.co',
+    'http://praktikum.tk',
+    'localhost:3000',
+    'localhost:3001',
+  ],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Authorization', 'accept'],
+  method: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
+
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
-app.use(cors);
 
 app.get('/crash-test', () => {
   setTimeout(() => {

@@ -1,56 +1,50 @@
-import { useContext } from "react";
-import defaultAvatar from "../images/user.jpg";
-import { Card } from "./Card";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import React from 'react';
+import Card from './Card.js';
+import CurrentUserContext from '../context/CurrentUserContext.js'
 
-export default function Main({
-  cards,
-  onEditProfile,
-  onAddCard,
-  onEditAvatar,
-  onCardClick,
-  onCardLike,
-  onCardDelete,
-}) {
-  const currentUser = useContext(CurrentUserContext);
-  const { name, about, avatar } = currentUser;
+function Main(props) {
+
+  const currentUser = React.useContext(CurrentUserContext);
 
   return (
-    <main>
+  <>
+
+    <main className="content">
+
       <section className="profile">
-        <div className="profile__dark-layout" onClick={onEditAvatar}>
-          <img
-            src={avatar || defaultAvatar}
-            alt="картинка профиля"
-            className="profile__picture"
-          />
+
+        <button onClick={props.onEditAvatar} className="profile__avatar-button" type="button">
+          <img className="profile__avatar-image" src={currentUser.avatar} alt="Аватар" />
+        </button>
+
+        <div className="profile__info">
+          <h1 className="profile__info-title text-overflow">{currentUser.name}</h1>
+          <button onClick={props.onEditProfile} className="profile__button profile__button_responsible_edit-info button-hovered" type="button" />
+          <p className="profile__info-subtitle text-overflow">{currentUser.about}</p>
         </div>
-        <h1 className="profile__name">{name}</h1>
-        <p className="profile__about">{about}</p>
-        <button
-          type="button"
-          className="profile__button profile__button_type_edit"
-          onClick={onEditProfile}
-        />
-        <button
-          type="button"
-          className="profile__button profile__button_type_add"
-          onClick={onAddCard}
-        />
+
+        <button onClick={props.onAddPlace} className="profile__button profile__button_responsible_add-card button-hovered" type="button" />
       </section>
-      <section className="cards">
-        {cards.map((card) => {
-          return (
-            <Card
-              key={card.id}
-              onClick={onCardClick}
-              onLike={onCardLike}
-              onDelete={onCardDelete}
-              card={card}
-            />
-          );
-        })}
+
+      <section className="gallery">
+      	
+        {props.cards.map((card) => (
+          <Card
+          	key={card._id}
+          	card={card}
+          	name={card.name}
+          	link={card.link}
+            likes={card.likes.length}
+            onCardClick={props.onCardClick}
+            onCardLike={props.onCardLike}
+            onCardDelete={props.onCardDelete}
+          />
+        ))}
+
       </section>
     </main>
+</>
   );
 }
+
+export default Main;

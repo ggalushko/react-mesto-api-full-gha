@@ -1,0 +1,42 @@
+.profile__avatar-button {
+  height: 120px;
+  width: 120px;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile__avatar-button::after {
+  content: '';
+  background: url('../../../images/avatarEdit.svg');
+  background-repeat: no-repeat;
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  opacity: 0;
+  transition: all .3s ease-in;
+}
+
+.profile__avatar-button::before {
+  content: '';
+  background: #00000080;
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  opacity: 0;
+  transition: all .3s ease-in;
+}
+
+.profile__avatar-button:hover:before {
+  opacity: 1;
+}
+
+.profile__avatar-button:hover:after {
+  opacity: 1;
+}

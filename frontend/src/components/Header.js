@@ -1,39 +1,26 @@
-import logo from "../images/logo.svg";
-import { useLocation, useNavigate } from "react-router-dom";
+import Logo from '../images/logo.svg';
+import { Route, Routes, NavLink } from "react-router-dom";
 
-export function Header({ email, handleLogout }) {
-  const location = useLocation().pathname;
-  const navigate = useNavigate();
-
-  let caption = "";
-
-  if (location === "/signup") {
-    caption = "Войти";
-  } else if (location === "/signin") {
-    caption = "Регистрация";
-  }
-
+function Header(props) {
   return (
-    <header className="header">
-      <img src={logo} alt="Логотип Mesto Russia" className="header__logo" />
-      <a
-        className="header__caption"
-        onClick={() => {
-          if (location === "/signup") {
-            navigate("/signin");
-          } else if (location === "/signin") {
-            navigate("/signup");
-          }
-        }}
-      >
-        {caption}
-      </a>
-      <p className="header__email">{email}</p>
-      {location === "/" && (
-        <a className="header__logout" onClick={handleLogout}>
-          Выйти
-        </a>
-      )}
+  <>
+    <header className="header">  
+      <img className="header__logo" src={Logo} alt="Логотип" />
+      <Routes>
+        <Route path="/" element={
+          <div className="header__container">
+          <p className="header__auth">{props.email}</p>
+          <NavLink to="/sign-in" onClick={props.onClick} className="header__auth button-hovered">Выйти</NavLink>
+        </div>} />
+
+      	<Route path="/sign-up" element={<NavLink to="/sign-in" className="header__auth button-hovered">Войти</NavLink>} />
+	
+      	<Route path="/sign-in" element={<NavLink to="/sign-up" className="header__auth button-hovered">Регистрация</NavLink>}/>
+
+      </Routes>
     </header>
+  </>
   );
 }
+
+export default Header;

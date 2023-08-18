@@ -1,0 +1,22 @@
+.profile__button_responsible_edit-info {
+  margin: 15px 0 0 20px;
+  max-height: 24px;
+  background: url(../../../../images/edit-button.svg);
+  min-width: 24px;
+  min-height: 24px;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 642px) {
+  .profile__button_responsible_edit-info {
+    max-height: 18px;
+    margin-top: 7px;
+    margin-left: 10px;
+    min-width: 18px;
+    min-height: 18px;
+    background-size: 18px 18px;
+  }
+}

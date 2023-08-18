@@ -1,0 +1,12 @@
+.header__auth {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  color: #fff;
+  margin: 7px 0 0;
+  text-decoration: none;
+}
+
+.header__auth:last-child {
+  margin-left: 27px;
+}

@@ -1,110 +1,126 @@
 class Api {
-  constructor(options) {
-    this._options = options;
+
+  constructor(token) {
+
+    this._token = token;
   }
 
-  _checkResponse(res) {
-    return res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
+  _checkResult(res) {
+  
+    if (res.ok) {
+      return res.json();
+    } 
+      return Promise.reject(res.status)
   }
 
-  getToken(jwt) {
-    this._options.headers.authorization = `Bearer ${jwt}`;
-  }
+  load() {
 
-  async getInitialCards() {
-    const res = await fetch(`${this._options.baseURL}/cards`, {
+    return Promise.all([
+      fetch('https://api.mestofull.nomoreparties.co/users/me', {
+        credentials: "include",
+        headers: {
+          authorization: this._token
+        }
+      }).then((res) => this._checkResult(res)),
+
+      fetch('https://api.mestofull.nomoreparties.co/cards', {
+      credentials: "include",
       headers: {
-        ...this._options.headers,
+        authorization: this._token
+      }
+    }).then((res) => this._checkResult(res))
+    ])
+  }
+
+  editProfile({fullName, specialty}) {
+
+    return fetch('https://api.mestofull.nomoreparties.co/users/me', {
+      method: 'PATCH',
+      credentials: "include",
+      headers: {
+        authorization: this._token,
+        'Content-Type': 'application/json'
       },
-    });
-    return this._checkResponse(res);
+      body: JSON.stringify({
+        name: fullName,
+        about: specialty
+      })
+    })
+      .then((res) => this._checkResult(res))
   }
 
-  async addCard(name, link) {
-    const res = await fetch(`${this._options.baseURL}/cards`, {
-      method: "POST",
+  addCard({name, link}) {
+
+    return fetch('https://api.mestofull.nomoreparties.co/cards', {
+      method: 'POST',
+      credentials: "include",
       headers: {
-        ...this._options.headers,
+        authorization: this._token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         name: name,
-        link: link,
-      }),
-    });
-    return this._checkResponse(res);
+        link: link
+      })
+    })
+      .then((res) => this._checkResult(res))
   }
 
-  async getUserData() {
-    const res = await fetch(`${this._options.baseURL}/users/me `, {
+  deleteCard(cardId) {
+
+    return fetch(`https://api.mestofull.nomoreparties.co/cards/${cardId}`, {
+      method: 'DELETE',
+      credentials: "include",
       headers: {
-        ...this._options.headers,
+        authorization: this._token
       },
-    });
-    return this._checkResponse(res);
+    })
+      .then((res) => this._checkResult(res))
   }
 
-  async editProfile({ name, about }) {
-    const res = await fetch(`${this._options.baseURL}/users/me `, {
-      method: "PATCH",
+  changeLikeCardStatus(cardId, isLiked) {
+    return isLiked ? this.likeCard(cardId) : this.unLikeCard(cardId);
+  }
+
+  likeCard(cardId) {
+
+    return fetch(`https://api.mestofull.nomoreparties.co/cards/${cardId}/likes`, {
+      method: 'PUT',
+      credentials: "include",
       headers: {
-        ...this._options.headers,
+        authorization: this._token
       },
-      body: JSON.stringify({
-        name: name,
-        about: about,
-      }),
-    });
-    return this._checkResponse(res);
+    })
+      .then((res) => this._checkResult(res))
   }
 
-  async deleteCard(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}`, {
-      method: "DELETE",
+  unLikeCard(cardId) {
+    return fetch(`https://api.mestofull.nomoreparties.co/cards/${cardId}/likes`, {
+      method: 'DELETE',
+      credentials: "include",
       headers: {
-        ...this._options.headers,
+        authorization: this._token
       },
-    });
-    return this._checkResponse(res);
+    })
+      .then((res) => this._checkResult(res))
   }
 
-
-  async addLike(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}/likes`, {
-      method: "PUT",
+  updateAvatar({avatar}) {
+    return fetch('https://api.mestofull.nomoreparties.co/users/me/avatar', {
+      method: 'PATCH',
+      credentials: "include",
       headers: {
-        ...this._options.headers,
-      },
-    });
-    return this._checkResponse(res);
-  }
-
-  async removeLike(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}/likes`, {
-      method: "DELETE",
-      headers: {
-        ...this._options.headers,
-      },
-    });
-    return this._checkResponse(res);
-  }
-
-  async changeAvatar(imageURL) {
-    const res = await fetch(`${this._options.baseURL}/users/me/avatar`, {
-      method: "PATCH",
-      headers: {
-        ...this._options.headers,
+        authorization: this._token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        avatar: imageURL,
-      }),
-    });
-    return this._checkResponse(res);
+        avatar: avatar
+      })
+    })
+      .then((res) => this._checkResult(res))
   }
 }
 
-export const api = new Api({
-  baseURL: "https://api.mestofull.nomoreparties.co",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const api = new Api(localStorage.getItem('jwt'));
+
+export default api;

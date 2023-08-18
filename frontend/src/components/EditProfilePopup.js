@@ -1,56 +1,81 @@
-import { useContext, useState, useEffect } from "react";
-import { PopupWithForm } from "./PopupWithForm";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import React from 'react';
+import PopupWithForm from './PopupWithForm.js';
+import CurrentUserContext from '../context/CurrentUserContext.js'
 
-function EditProfilePopup({ isOpened, onClose, onUpdateUser }) {
-  const currentUser = useContext(CurrentUserContext)
-  useEffect(() => {
-    setName(currentUser.name || "");
-    setAbout(currentUser.about || "");
-  }, [currentUser, isOpened]); 
+function EditProfilePopup(props) {
 
-  const [name, setName] = useState("");
-  const [about, setAbout] = useState("");
- 
+  const currentUser = React.useContext(CurrentUserContext);
+
+  const [name, setName] = React.useState('');
+  const [description, setDescription] = React.useState('');
+
+  function nameChange(e) {
+    setName(e.target.value);
+  }
+
+  function descriptionChange(e) {
+    setDescription(e.target.value);
+  }
+
+  React.useEffect(() => {
+
+    if (props.isOpen) {
+      setName(currentUser.name);
+      setDescription(currentUser.about);
+    }
+  }, [currentUser, props]);
+
   function handleSubmit(e) {
+
     e.preventDefault();
-    onUpdateUser(name, about)
-  } 
+
+    props.onUpdateUser({
+      fullName: name,
+      specialty: description
+    });
+  }
 
   return (
+
     <PopupWithForm
-      title="Редактировать профиль"
-      name="edit-profile"
-      isOpened={isOpened}
-      onClose={onClose}
+      name={'edit-profile-popup'}
+      title={'Редактировать профиль'}
+      formName={'editProfileForm'}
+      button={'Сохранить'}
+      isOpen={props.isOpen}
+      onClose={props.onClose}
+      onCloseClick={props.onCloseClick}
       onSubmit={handleSubmit}
-    >
+      >
+
       <input
-        required
-        minLength="2"
-        maxLength="40"
-        type="text"
-        className="form__input form__input_name"
+        id="fullName-input"
+        className="form-popup__input form-popup__input_type_profile-name"
+        autoComplete="off"
+        required=""
+        minLength={2}
+        maxLength={40}
+        name="fullName"
         placeholder="Имя"
-        name="name"
-        autoComplete="off"
         value={name}
-        onChange={e => setName(e.target.value)}
+        onChange={nameChange}
       />
-      <p className="error-message name-error"></p>
+      <span className="form-popup__error fullName-input-error" />
+      
       <input
-        minLength="2"
-        maxLength="200"
-        required
-        type="text"
-        className="form__input form__input_about"
-        placeholder="О себе"
-        name="about"
+        id="specialty-input"
+        className="form-popup__input form-popup__input_type_specialty"
         autoComplete="off"
-        value={about}
-        onChange={e => setAbout(e.target.value)}
+        required=""
+        minLength={2}
+        maxLength={200}
+        name="specialty"
+        placeholder="О себе"
+        value={description}
+        onChange={descriptionChange}
       />
-      <p className="error-message about-error"></p>
+      <span className="form-popup__error specialty-input-error" />
+
     </PopupWithForm>
   );
 }

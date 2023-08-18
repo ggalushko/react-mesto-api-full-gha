@@ -1,25 +1,17 @@
-.profile__info{   
-    margin-block: 0;
-
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    color: #FFFFFF;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 300px;
+.profile__info {
+  color: #fff;
+  margin: 0 0 0 30px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: minmax(min-content, max-content) minmax(min-content, max-content);
+  max-width: 337px;
+  align-self: center;
 }
-@media screen and (max-width: 1000px){  
-.profile__info{
-    font-size: 16px;
-    line-height: 14px;
-    max-width: 240px;
-}}
-@media screen and (max-width: 440px){ 
-.profile__info{
-    font-size: 14px;
-    line-height: 17px;
-    max-width: 190px;
-}}
+
+@media screen and (max-width: 642px) {
+  .profile__info {
+    max-width: 282px;
+    margin-top: 27px;
+    margin-left: 0;
+  }
+}

@@ -1,48 +1,44 @@
-import { useState } from "react";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-export default function Register({ handleSignUp }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function Register(props) {
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (email && password) {
-      handleSignUp(email, password);
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    function usernameChange(e) {
+      setUsername(e.target.value);
     }
-  };
+  
+    function passwordChange(e) {
+      setPassword(e.target.value);
+    }
 
-  return (
-    <div className="form-container">
-      <form name="login-form" className="login-form" onSubmit={onSubmit}>
-        <h2 className="login-form__header">Регистрация</h2>
-        <input
-          className="login-form__input"
-          type="text"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="login-form__input"
-          type="password"
-          placeholder="Пароль"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="login-form__button"
-          id="auth-button-save-login"
-        >
-          Зарегистрироваться
-        </button>
-        <p className="login-form__caption">
-          Уже зарегистрирированы?{" "}
-          <a className="login-form__link" href="/signin">
-            Войти
-          </a>
-        </p>
-      </form>
-    </div>
+    function handleSubmit(e){
+      e.preventDefault();
+      props.onRegister(username, password)
+    }
+
+  return(
+    <main className="auth">
+      <section className="auth__container">
+
+        <h2 className="auth__title">Регистрация</h2>
+
+        <form onSubmit={handleSubmit} className="auth__form">
+
+          <input className="auth__input" required id="username" name="username" type="email" placeholder="Email" value={username} onChange={usernameChange} />
+
+          <input className="auth__input" required id="password" name="password" type="password" placeholder="Пароль" value={password} onChange={passwordChange} />
+
+          <button type="submit" className="auth__button">Зарегистрироваться</button>
+
+        </form>
+
+        <NavLink className="auth__switch button-hovered" to="/sign-in">Уже зарегистрированы? Войти</NavLink>
+      </section>
+    </main>
   );
 }
+
+export default Register;
