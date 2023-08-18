@@ -6,7 +6,6 @@ class Api {
   }
 
   _checkResult(res) {
-  
     if (res.ok) {
       return res.json();
     } 
@@ -14,7 +13,6 @@ class Api {
   }
 
   load() {
-
     return Promise.all([
       fetch('https://api.mestofull.nomoreparties.co/users/me', {
         credentials: "include",
@@ -67,7 +65,6 @@ class Api {
   }
 
   deleteCard(cardId) {
-
     return fetch(`https://api.mestofull.nomoreparties.co/cards/${cardId}`, {
       method: 'DELETE',
       credentials: "include",
@@ -83,7 +80,6 @@ class Api {
   }
 
   likeCard(cardId) {
-
     return fetch(`https://api.mestofull.nomoreparties.co/cards/${cardId}/likes`, {
       method: 'PUT',
       credentials: "include",

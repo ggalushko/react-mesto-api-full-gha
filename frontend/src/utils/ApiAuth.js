@@ -12,7 +12,6 @@ const BASE_URL = 'https://api.mestofull.nomoreparties.co';
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
-    credentials: "include",
     headers: {
       'Content-Type': 'application/json'
     },
