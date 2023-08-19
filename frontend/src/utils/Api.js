@@ -57,8 +57,8 @@ class Api {
     return this._checkResponse(res);
   }
 
-  async deleteCard(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}`, {
+  async deleteCard(_id) {
+    const res = await fetch(`${this._options.baseURL}/cards/${_id}`, {
       credentials: "include",
       method: "DELETE",
       headers: {

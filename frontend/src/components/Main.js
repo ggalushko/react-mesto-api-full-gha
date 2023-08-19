@@ -1,6 +1,5 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import defaultAvatar from "../images/user.jpg";
-import { api } from "../utils/Api";
 import { Card } from "./Card";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 

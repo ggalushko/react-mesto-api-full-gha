@@ -23,7 +23,7 @@ usersRouter.patch('/me/avatar', celebrate({
   }),
 }), editProfile);
 
-usersRouter.get('/:userId', celebrate({
+usersRouter.get('/:_id', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).hex().required(),
   }),
