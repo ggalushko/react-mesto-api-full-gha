@@ -1,41 +1,42 @@
-import React from 'react';
+import { useState } from "react";
 
-  function Login(props) {
+export default function Login({ handleSignIn }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [username, setUsername] = React.useState('');
-    const [password, setPassword] = React.useState('');
-
-    function usernameChange(e) {
-      setUsername(e.target.value);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (email && password) {
+      handleSignIn(email, password);
     }
-  
-    function passwordChange(e) {
-      setPassword(e.target.value);
-    }
+  };
 
-    function handleSubmit(e){
-      e.preventDefault();
-      props.onLogin(username, password)
-    }
-
-    return(
-      <main className="auth">
-        <section className="auth__container">
-
-          <h2 className="auth__title">Вход</h2>
-
-          <form onSubmit={handleSubmit} className="auth__form">
-
-            <input className="auth__input" required id="username" name="username" type="email" placeholder="Email" value={username} onChange={usernameChange} />
-
-            <input className="auth__input" required id="password" name="password" type="password" placeholder="Пароль" value={password} onChange={passwordChange} />
-
-            <button type="submit" className="auth__button">Войти</button>
-
-          </form>
-        </section>
-      </main>
-    );
-  }
-
-export default Login;
+  return (
+    <div className="form-container">
+      <form name="login-form" className="login-form" onSubmit={onSubmit}>
+        <h2 className="login-form__header">Вход</h2>
+        <input
+          className="login-form__input"
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="login-form__input"
+          type="password"
+          placeholder="Пароль"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="login-form__button"
+          id="auth-button-save-login"
+        >
+          Войти
+        </button>
+      </form>
+    </div>
+  );
+}

@@ -1,0 +1,22 @@
+.profile__button_type_edit {
+  grid-area: edit-button;
+  display: flex;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 18px;
+  margin-bottom: 16px;
+  padding: 7px;
+  background-image: url("../../../../images/edit.svg");
+  border: 1px solid #fff;
+}
+
+@media (max-width: 740px) {
+  .profile__button_type_edit {
+    transform: translate(-20px, 18px);
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+    margin-bottom: 7px;
+  }
+}

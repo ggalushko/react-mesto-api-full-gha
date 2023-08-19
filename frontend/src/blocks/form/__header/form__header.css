@@ -1,0 +1,15 @@
+.form__header {
+  color: black;
+  margin: 0 0 45px 0;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+@media (max-width: 425px) {
+  .form__header {
+    margin-bottom: 75px;
+    font-size: 18px;
+    line-height: 22px;
+  }
+}

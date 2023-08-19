@@ -1,0 +1,9 @@
+.login-form__button {
+  width: 358px;
+  height: 50px;
+  border-radius: 2px;
+  background: #fff;
+  border: none;
+  margin-top: 216px;
+  cursor: pointer;
+}
