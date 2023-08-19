@@ -19,7 +19,9 @@ import ProtectedRoute from "./ProtectedRoute";
 
 export function App() {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("jwt"));
+  const [currentUser, setCurrentUser] = useState({});
   const [email, setEmail] = useState(" ");
+
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,9 +35,9 @@ export function App() {
     }
   }, [loggedIn]);
 
-  const [currentUser, setCurrentUser] = useState({});
+
   const [cards, setCards] = useState([]);
-  useEffect(() => {}, [cards]);
+  useEffect(() => {          setEmail(currentUser.email)}, [cards]);
 
   const [editProfilePopupIsOpened, setEditProfilePopupIsOpened] =
     useState(false);
@@ -78,8 +80,8 @@ export function App() {
       api
         .addLike(card._id)
         .then((newCard) => {
-          setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+          setCards((cards) =>
+          cards.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
@@ -87,8 +89,8 @@ export function App() {
       api
         .removeLike(card._id)
         .then((newCard) => {
-          setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+          setCards((cards) =>
+          cards.map((c) => (c._id === card._id ? newCard : c))
           );
         })
         .catch((err) => console.log(err));
@@ -176,12 +178,10 @@ export function App() {
         .checkToken(jwt)
         .then((res) => {
           setLoggedIn(true);
-          setEmail(res.data.email);
+          setEmail(res.email);
           navigate("/");
         })
         .catch((err) => {
-          setTooltipIsOk(true);
-          setInfoTooltipIsOpened(true);
           console.log(err);
         });
     }

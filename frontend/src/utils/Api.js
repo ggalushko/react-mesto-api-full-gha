@@ -69,8 +69,8 @@ class Api {
   }
 
 
-  async addLike(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}/likes`, {
+  async addLike(_id) {
+    const res = await fetch(`${this._options.baseURL}/cards/${_id}/likes`, {
       credentials: "include",
       method: "PUT",
       headers: {
@@ -80,8 +80,8 @@ class Api {
     return this._checkResponse(res);
   }
 
-  async removeLike(id) {
-    const res = await fetch(`${this._options.baseURL}/cards/${id}/likes`, {
+  async removeLike(_id) {
+    const res = await fetch(`${this._options.baseURL}/cards/${_id}/likes`, {
       credentials: "include",
       method: "DELETE",
       headers: {

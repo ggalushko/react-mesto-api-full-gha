@@ -9,7 +9,7 @@ const ConflictError = require('../errors/ConflictError');
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-
+    console.log(req);
     res.send(users);
   } catch (err) {
     next(err);
